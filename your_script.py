@@ -28,8 +28,8 @@ def get_transcript(url):
 
 # Your YouTube URL list
 urls = [
-    "https://www.youtube.com/watch?v=VIDEO_ID_1",
-    "https://www.youtube.com/watch?v=VIDEO_ID_2"
+    "https://www.youtube.com/watch?v=GMG-ZEG_VU4",
+    "https://www.youtube.com/watch?v=wjkPGhj2Odw"
 ]
 
 # Process each URL
