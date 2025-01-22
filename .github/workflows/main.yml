@@ -1,8 +1,6 @@
 name: Get YouTube Transcripts
 
 on:
-  schedule:
-    - cron: '0 0 * * 6'  # Runs at 00:00 on Saturday
   workflow_dispatch:  # Allows manual triggering
 
 jobs:
@@ -10,12 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-        
+    - uses: actions/checkout@v3
+      
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: '3.9'
         
@@ -24,16 +20,27 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         
-    - name: Create transcripts directory
-      run: mkdir -p transcripts
+    - name: List current directory
+      run: |
+        pwd
+        ls -la
         
     - name: Run transcript script
-      run: python your_script.py
-        
-    - name: Commit and push if changes
       run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add transcripts/
-        git commit -m "Add transcripts $(date +'%Y-%m-%d')" || exit 0
+        python your_script.py
+        echo "After running script:"
+        ls -la
+        
+    - name: Check transcripts directory
+      run: |
+        echo "Checking transcripts directory:"
+        ls -la transcripts || echo "No transcripts directory found"
+        
+    - name: Commit and push changes
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git status
+        git add -A
+        git commit -m "Add transcripts $(date +'%Y-%m-%d')" || echo "No changes to commit"
         git push
