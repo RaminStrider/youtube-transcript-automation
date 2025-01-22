@@ -1,11 +1,13 @@
 name: Get YouTube Transcripts
 
 on:
-  workflow_dispatch:  # Allows manual triggering
+  workflow_dispatch:
 
 jobs:
   get-transcripts:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     
     steps:
     - uses: actions/checkout@v3
@@ -20,27 +22,25 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         
-    - name: List current directory
+    - name: Show initial directory
       run: |
         pwd
         ls -la
         
     - name: Run transcript script
+      run: python your_script.py
+        
+    - name: Show files after script
       run: |
-        python your_script.py
-        echo "After running script:"
+        echo "Current directory:"
         ls -la
+        echo "\nChecking transcripts directory:"
+        ls -la transcripts || echo "No transcripts directory"
         
-    - name: Check transcripts directory
+    - name: Commit changes
       run: |
-        echo "Checking transcripts directory:"
-        ls -la transcripts || echo "No transcripts directory found"
-        
-    - name: Commit and push changes
-      run: |
-        git config --local user.email "github-actions[bot]@users.noreply.github.com"
-        git config --local user.name "github-actions[bot]"
-        git status
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
         git add -A
-        git commit -m "Add transcripts $(date +'%Y-%m-%d')" || echo "No changes to commit"
+        git commit -m "Add transcripts" || echo "No changes to commit"
         git push
